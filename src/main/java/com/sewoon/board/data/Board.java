@@ -16,14 +16,14 @@ import java.util.Date;
 public class
 Board {
 
-    private Long id;                      // 기본키
-    private String title;                     // 작성자
-    private String content;         // 작성일자
-    private int hits;                     // 별점*
-    private String delete_yn;         // 리뷰 사진(사진 테이블)*
-    private Date created_date;                         // 주문서 외래키
-    private Date modified_date;                    // 예약 외래키(가이드 상품, 상품)
-    private String passwd;
+    private Long id;
+    private String title;
+    private String content;
+    private int hits;
+    private String delete_yn;
+    private Date created_date;
+    private Date updated_date;
+    private String password;
 
 
 }
