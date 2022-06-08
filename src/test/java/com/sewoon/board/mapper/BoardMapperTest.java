@@ -27,4 +27,53 @@ class BoardMapperTest {
         System.out.println(board);
         System.out.println(boardMapper.newBoard(board));
     }
+
+    @Test
+    void findById() {
+        String pw = "  ";
+
+        if(pw.trim().equals(boardMapper.findPasswordById(1))) System.out.println("!!!!!!!!!");
+    }
+
+    @Test
+    void boardAll() {
+        System.out.println(boardMapper.boardAll());
+    }
+
+    @Test
+    void testNewBoard() {
+    }
+
+    @Test
+    void updateBoard() {
+
+        Board board = Board.builder()
+                .id(3)
+                .title("이세운이세운이세운")
+                .content("ABCDEFGHIJK").build();
+
+        if(board.getPassword() == null){
+            System.out.println(boardMapper.updateBoard(board));
+        } else {
+            System.out.println(boardMapper.updateBoardWithPassword(board));
+        }
+
+//        System.out.println(boardMapper.updateBoard(board));
+
+    }
+
+    @Test
+    void deleteBoard() {
+        System.out.println(boardMapper.deleteBoard(2));
+    }
+
+    @Test
+    void existsCheckById() {
+        System.out.println(boardMapper.existsCheckById(1).isEmpty());
+    }
+
+    @Test
+    void searchBoard() {
+        System.out.println(boardMapper.searchBoard("%b%"));
+    }
 }

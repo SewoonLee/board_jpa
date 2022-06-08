@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/board")
@@ -22,12 +21,12 @@ public class BoardController {
 
     // password 필수
     @PostMapping("/new")
-    public int postBoard(@RequestBody Board board) {
+    public String postBoard(@RequestBody Board board) {
         System.out.println("[post board]");
         System.out.println(board);
 
 
-        return boardMapper.newBoard(board);
+        return boardMapper.newBoard(board) ? "등록 성공" : "등록 실패";
     }
 
     @GetMapping("/all")
@@ -37,38 +36,62 @@ public class BoardController {
         return boardMapper.boardAll();
     }
 
-    @GetMapping("/search")
-    public List<Board> searchBoard() {
+    @GetMapping("/search/{keyword}")
+    public List<Board> searchBoard(@PathVariable("keyword") String keyword) {
         System.out.println("[search]");
+        System.out.println("keyword: " + keyword);
 
-        return null;
+        keyword = "%"+keyword+"%";
+
+        return boardMapper.searchBoard(keyword);
     }
 
 
     // id 가 포함된 Board
+    // password 체크
     @PutMapping("/update/{password}")
-    public boolean updateBoard(@RequestBody Board board, @PathVariable("password") String password) {
+    public String updateBoard(@RequestBody Board board, @PathVariable("password") String password) {
         System.out.println("[update]");
         System.out.println(board);
         System.out.println(password);
 
+        if(boardMapper.existsCheckById(board.getId()).isEmpty()) return "이미 삭제된 게시물입니다.";
 
-        return boardMapper.updateBoard(board, password);
+        if (checkPassword(board.getId(), password)) {
+            if(board.getPassword() == null){
+                System.out.println("    [updateBoard]");
+                return boardMapper.updateBoard(board) ? "수정 성공" : "수정 실패";
+            } else {
+                System.out.println("    [updateBoardWithPassword]");
+                return boardMapper.updateBoardWithPassword(board) ? "수정 성공" : "수정 실패";
+            }
+
+        } else {
+            return "비밀번호가 일치하지 않습니다";
+        }
+
     }
 
+    // password 체크
     @DeleteMapping("/delete/{id}/{password}")
-    public boolean deleteBoard(@PathVariable("id") int id, @PathVariable("password") String password) {
+    public String deleteBoard(@PathVariable("id") int id, @PathVariable("password") String password) {
         System.out.println("[delete]");
-        System.out.println(id);
-        System.out.println(password);
+        System.out.println("id: " + id);
+        System.out.println("password: " + password);
 
-        return boardMapper.deleteBoard(id, password);
+
+        if(boardMapper.existsCheckById(id).isEmpty()) return "이미 삭제된 게시물입니다.";
+
+        if(checkPassword(id, password)) {
+            if(boardMapper.deleteBoard(id)) return "삭제 성공";
+            else return "이미 삭제된 게시물입니다.";
+        } else {
+            return "비밀번호가 일치하지 않습니다.";
+        }
     }
 
     public boolean checkPassword(int id, String password) {
-
-
-        return Objects.equals(boardMapper.findById(id), password);
+        return password.trim().equals(boardMapper.findPasswordById(id));
     }
 
 

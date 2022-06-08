@@ -16,11 +16,11 @@ import java.util.Date;
 public class
 Board {
 
-    private Long id;
+    private int id;
     private String title;
     private String content;
     private int hits;
-    private String delete_yn;
+    private boolean delete_yn;
     private Date created_date;
     private Date updated_date;
     private String password;

@@ -5,16 +5,17 @@ import com.sewoon.board.data.Board;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface BoardMapper {
 
     @Select("""
-            SELECT password
+            SELECT *
             FROM board
-            WHRER id=#{id}
+            WHERE id = #{id}
             """)
-    public String findById(@Param("id") int id);
+    public Optional<Board> existsCheckById(@Param("id") int id);
 
     @Select("""
             SELECT *
@@ -22,24 +23,42 @@ public interface BoardMapper {
             """)
     public List<Board> boardAll();
 
+    @Select("""
+            SELECT *
+            FROM board
+            WHERE title like #{keyword}
+            """)
+    public List<Board> searchBoard(@Param("keyword") String keyword);
+
+    @Select("""
+            SELECT password
+            FROM board
+            WHERE id=#{id}
+            """)
+    public String findPasswordById(@Param("id") int id);
+
 
     @Insert("""
             INSERT INTO board(title, content, password)
             VALUES (#{board.title}, #{board.content}, #{board.password})
             """)
-    public int newBoard(@Param("board") Board board);
+    public boolean newBoard(@Param("board") Board board);
+
+    @Update("""
+            UPDATE board
+            SET title=#{board.title}, content=#{board.content}
+            """)
+    public boolean updateBoard(@Param("board") Board board);
 
     @Update("""
             UPDATE board
             SET title=#{board.title}, content=#{board.content}, password=#{board.password}
-            WHERE password=#{password}
             """)
-    public boolean updateBoard(@Param("board") Board board, @Param("password") String password);
+    public boolean updateBoardWithPassword(@Param("board") Board board);
 
     @Delete("""
             DELETE FROM board
             WHERE id=#{id}
-            AND password=#{password}
             """)
-    public boolean deleteBoard(@Param("id") int id, @Param("password") String password);
+    public boolean deleteBoard(@Param("id") int id);
 }
