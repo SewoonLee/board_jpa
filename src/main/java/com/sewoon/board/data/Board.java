@@ -20,7 +20,7 @@ Board {
     private String title;
     private String content;
     private int hits;
-    private boolean delete_yn;
+//    private boolean delete_yn;
     private Date created_date;
     private Date updated_date;
     private String password;

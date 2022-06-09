@@ -42,6 +42,7 @@ class BoardMapperTest {
 
     @Test
     void testNewBoard() {
+        System.out.println(Board.builder().build());
     }
 
     @Test
@@ -69,11 +70,18 @@ class BoardMapperTest {
 
     @Test
     void existsCheckById() {
-        System.out.println(boardMapper.existsCheckById(1).isEmpty());
+        System.out.println(boardMapper.findById(1) == null);
     }
 
     @Test
     void searchBoard() {
         System.out.println(boardMapper.searchBoard("%b%"));
+    }
+
+    @Test
+    void testFindById() {
+        Board board = boardMapper.findById(1);
+        if(board != null) System.out.println(board);
+        else System.out.println("is not exists");
     }
 }

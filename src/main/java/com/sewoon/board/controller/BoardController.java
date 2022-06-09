@@ -18,6 +18,10 @@ public class BoardController {
     @Autowired
     BoardMapper boardMapper;
 
+    @GetMapping("/test")
+    public String test() {
+        return "testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest";
+    }
 
     // password 필수
     @PostMapping("/new")
@@ -27,6 +31,20 @@ public class BoardController {
 
 
         return boardMapper.newBoard(board) ? "등록 성공" : "등록 실패";
+    }
+
+    @GetMapping("/{id}")
+    public Board findById(@PathVariable("id") int id) {
+        Board board = boardMapper.findById(id);
+        System.out.println("[get board by id]");
+        System.out.println("id: " + id);
+
+
+        if(board == null) {
+            return Board.builder().build();
+        }else {
+            return board;
+        }
     }
 
     @GetMapping("/all")
@@ -41,9 +59,7 @@ public class BoardController {
         System.out.println("[search]");
         System.out.println("keyword: " + keyword);
 
-        keyword = "%"+keyword+"%";
-
-        return boardMapper.searchBoard(keyword);
+        return boardMapper.searchBoard("%"+keyword+"%");
     }
 
 
@@ -55,7 +71,7 @@ public class BoardController {
         System.out.println(board);
         System.out.println(password);
 
-        if(boardMapper.existsCheckById(board.getId()).isEmpty()) return "이미 삭제된 게시물입니다.";
+        if(boardMapper.findById(board.getId()) == null) return "이미 삭제된 게시물입니다.";
 
         if (checkPassword(board.getId(), password)) {
             if(board.getPassword() == null){
@@ -80,11 +96,10 @@ public class BoardController {
         System.out.println("password: " + password);
 
 
-        if(boardMapper.existsCheckById(id).isEmpty()) return "이미 삭제된 게시물입니다.";
+        if(boardMapper.findById(id) == null) return "이미 삭제된 게시물입니다.";
 
         if(checkPassword(id, password)) {
-            if(boardMapper.deleteBoard(id)) return "삭제 성공";
-            else return "이미 삭제된 게시물입니다.";
+            return boardMapper.deleteBoard(id) ? "삭제 성공" : "삭제 실패";
         } else {
             return "비밀번호가 일치하지 않습니다.";
         }

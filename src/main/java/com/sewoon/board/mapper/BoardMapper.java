@@ -10,12 +10,14 @@ import java.util.Optional;
 @Mapper
 public interface BoardMapper {
 
+
+
     @Select("""
             SELECT *
             FROM board
             WHERE id = #{id}
             """)
-    public Optional<Board> existsCheckById(@Param("id") int id);
+    public Board findById(@Param("id") int id);
 
     @Select("""
             SELECT *
