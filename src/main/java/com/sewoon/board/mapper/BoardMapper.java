@@ -49,6 +49,7 @@ public interface BoardMapper {
     @Update("""
             UPDATE board
             SET title=#{board.title}, content=#{board.content}
+            WHERE id = #{board.id}
             """)
     public boolean updateBoard(@Param("board") Board board);
 

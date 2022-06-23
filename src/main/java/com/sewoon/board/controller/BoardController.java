@@ -64,28 +64,14 @@ public class BoardController {
 
 
     // id 가 포함된 Board
-    // password 체크
-    @PutMapping("/update/{password}")
-    public String updateBoard(@RequestBody Board board, @PathVariable("password") String password) {
+    @PutMapping("/update")
+    public String updateBoard(@RequestBody Board board) {
         System.out.println("[update]");
         System.out.println(board);
-        System.out.println(password);
 
-        if(boardMapper.findById(board.getId()) == null) return "이미 삭제된 게시물입니다.";
+        if (boardMapper.findById(board.getId()) == null) return "이미 삭제된 게시물입니다.";
 
-        if (checkPassword(board.getId(), password)) {
-            if(board.getPassword() == null){
-                System.out.println("    [updateBoard]");
-                return boardMapper.updateBoard(board) ? "수정 성공" : "수정 실패";
-            } else {
-                System.out.println("    [updateBoardWithPassword]");
-                return boardMapper.updateBoardWithPassword(board) ? "수정 성공" : "수정 실패";
-            }
-
-        } else {
-            return "비밀번호가 일치하지 않습니다";
-        }
-
+        return boardMapper.updateBoard(board) + "";
     }
 
     // password 체크
